@@ -1,0 +1,152 @@
+create database CMS_DB
+go
+use CMS_DB
+go
+
+create table Semester
+(
+	SemesterID int identity PRIMARY KEY,
+	SemesterNo nvarchar(50) not null
+)
+go
+
+create table Teacher
+(
+	TeacherID int identity PRIMARY KEY,
+	TeacherAcc nvarchar(50) not null,
+	TeacherPassword nvarchar(50) not null,
+	TeacherFullName nvarchar(50) not null,
+	TeacherAddress nvarchar(100) not null,
+	TeacherEmail nvarchar(50) not null,
+	PhoneNumber nvarchar(20) not null,
+	Position nvarchar(20) not null
+)
+go
+
+---- INSERT Teacher
+INSERT INTO Teacher([TeacherAcc],[TeacherPassword],[TeacherFullName],[TeacherAddress],[TeacherEmail],[PhoneNumber],[Position])
+VALUES ('tudm','12345','Do Minh Tu','Long Bien - Ha Noi','tudmgc00376@fpt.edu.vn','0912243455','4')
+
+
+create table Classes
+(
+	ClassID int identity PRIMARY KEY,
+	ClassName nvarchar(50) not null,
+	TeacherID int not null,
+	foreign key (TeacherID) references Teacher(TeacherID)
+)
+go
+
+create table Subjects
+(
+	SubjectID int identity PRIMARY KEY,
+	SubjectName nvarchar(150) not null,
+	SemesterID int not null,
+	foreign key (SemesterID) references Semester(SemesterID)
+)
+go
+
+create table Student
+(
+	StudentID int identity PRIMARY KEY,
+	StudentAcc nvarchar(50) not null,
+	StudentPassword nvarchar(50) not null,
+	StudentFullName nvarchar(50) not null,
+	DateOfBirth nvarchar(50) not null,
+	StudentAddress nvarchar(100) not null,
+	StudentEmail nvarchar(50) not null,
+	PhoneNumber nvarchar(20) not null,
+	Position nvarchar(20) not null,
+	ClassID int not null,
+	foreign key (ClassID) references Classes(ClassID)
+)
+go
+
+
+create table Coordinator
+(
+	CoordinatorID int identity PRIMARY KEY,
+	CoordinatorAcc nvarchar(50) not null,
+	CoordinatorPassword nvarchar(50) not null,
+	CoordinatorFullName nvarchar(50) not null,
+	CoordinatorAddress nvarchar(100) not null,
+	CoordinatorEmail nvarchar(50) not null,
+	PhoneNumber nvarchar(20) not null,
+	Position nvarchar(20) not null,
+	TeacherID int not null,
+	StudentID int not null,
+	SubjectID int not null,
+	ClassID int not null,
+	foreign key (SubjectID) references Subjects(SubjectID),
+	foreign key (ClassID) references Classes(ClassID),
+	foreign key (TeacherID) references Teacher(TeacherID),
+	foreign key (StudentID) references Student(StudentID)
+)
+go
+
+create table Manager
+(
+	ManagerID int identity PRIMARY KEY,
+	ManagerAcc nvarchar(50) not null,
+	ManagerPassword nvarchar(50) not null,
+	ManagerFullName nvarchar(50) not null,
+	ManagerAddress nvarchar(100) not null,
+	ManagerEmail nvarchar(50) not null,
+	PhoneNumber nvarchar(20) not null,
+	Position nvarchar(20) not null,
+	TeacherID int not null,
+	StudentID int not null,
+	CoordinatorID int not null,
+	SubjectID int not null,
+	ClassID int not null,
+	foreign key (SubjectID) references Subjects(SubjectID),
+	foreign key (ClassID) references Classes(ClassID),
+	foreign key (TeacherID) references Teacher(TeacherID),
+	foreign key (StudentID) references Student(StudentID),
+	foreign key (CoordinatorID) references Coordinator(CoordinatorID)
+)
+go
+
+create table SystemManager
+(
+	TeacherID int not null,
+	StudentID int not null,
+	CoordinatorID int not null,
+	ManagerID int not null,
+	foreign key (TeacherID) references Teacher(TeacherID),
+	foreign key (StudentID) references Student(StudentID),
+	foreign key (CoordinatorID) references Coordinator(CoordinatorID),
+	foreign key (ManagerID) references Manager(ManagerID)
+)
+go
+
+
+---- INSERT Semester
+INSERT INTO Semester([SemesterNo])
+VALUES ('Semester 1')
+INSERT INTO Semester([SemesterNo])
+VALUES ('Semester 2')
+
+
+---- INSERT Class
+INSERT INTO Classes([ClassName],[TeacherID])
+VALUES ('TCH1408','1')
+
+---- INSERT Subjects
+INSERT INTO Subjects([SubjectName],[SemesterID])
+VALUES ('Enterprise Web Software Development','1')
+
+
+---- INSERT Student
+INSERT INTO Student([StudentAcc],[StudentPassword],[StudentFullName],[DateOfBirth],[StudentAddress],[StudentEmail],[PhoneNumber],[Position],[ClassID])
+VALUES ('huydd','12345','Duong Duc Huy','11/1/1992','Ha Noi','huydd@fpt.edu.vn','0912345678','1','1')
+
+---- INSERT Coordinator
+INSERT INTO Coordinator([CoordinatorAcc],[CoordinatorPassword],[CoordinatorFullName],[CoordinatorAddress],[CoordinatorEmail],[PhoneNumber],[Position],[TeacherID],[StudentID],[SubjectID],[ClassID])
+VALUES ('lampt','12345','Pham Tung Lam','Ha Noi','lampt@fpt.edu.vn','0912987123','3','1','5','1','1')
+
+
+---- INSERT Manager
+
+INSERT INTO Manager([ManagerAcc],[ManagerPassword],[ManagerFullName],[ManagerAddress],[ManagerEmail],[PhoneNumber],[Position],[TeacherID],[StudentID],[CoordinatorID],[SubjectID],[ClassID])
+VALUES ('hungnt','12345','Nguyen Tran Hung','Ho Chi Minh','hungnt@fpt.edu.vn','0166789987','2','1','5','3','1','1')
